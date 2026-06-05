@@ -22,8 +22,17 @@ function Home() {
     useState("All");
 
   useEffect(() => {
-    fetchFoods();
-  }, []);
+  fetchFoods();
+
+  api.get("/users/profile/")
+    .then((res) => {
+      console.log("PROFILE:", res.data);
+    })
+    .catch((err) => {
+      console.log("PROFILE ERROR:", err.response?.data);
+    });
+
+}, []);
 
   const fetchFoods = async () => {
 
@@ -87,6 +96,7 @@ function Home() {
 
         </div>
 
+
         <div className="flex gap-3 overflow-x-auto py-8">
 
           {categories.map((category) => (
@@ -128,6 +138,7 @@ function Home() {
               </p>
 
             </div>
+
 
           ) : (
 

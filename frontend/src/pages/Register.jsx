@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import toast from "react-hot-toast";
 
 function Register() {
 
@@ -26,7 +27,7 @@ function Register() {
 
       await api.post("/users/register/", formData);
 
-      alert("Registration Successful");
+      toast.success("Registration Successful");
 
       navigate("/login");
 
@@ -34,7 +35,7 @@ function Register() {
 
       console.log(error.response.data);
 
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 

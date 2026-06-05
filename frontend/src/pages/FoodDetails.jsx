@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 import api from "../api/axios";
 import { CartContext } from "../context/CartContext";
@@ -96,15 +98,15 @@ function FoodDetails() {
 
 
 
-  const handleAddCart = () => {
+const handleAddCart = () => {
+  console.log("handleAddCart called");
+  toast.success("Added to cart");
 
-    addToCart({
-      ...food,
-      quantity,
-    });
-
-  };
-
+  addToCart({
+    ...food,
+    quantity,
+  });
+};
 
 
   if (!food) {
@@ -239,21 +241,15 @@ function FoodDetails() {
 
           </div>
 
-
-
-
-
           <button
+  onClick={handleAddCart}
+  className="mt-8 w-full bg-orange-500 text-white py-4 rounded-xl font-bold hover:bg-orange-600"
+>
+  Add {quantity} Item To Cart
+</button>
 
-            onClick={handleAddCart}
 
-            className="mt-8 w-full bg-orange-500 text-white py-4 rounded-xl font-bold hover:bg-orange-600"
-
-          >
-
-            Add {quantity} Item To Cart
-
-          </button>
+        
 
 
 

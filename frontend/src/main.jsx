@@ -5,10 +5,12 @@ import "./index.css";
 import "leaflet/dist/leaflet.css";
 
 import { CartProvider } from "./context/CartContext";
+import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CartProvider>
+      <Toaster position="top-right" />
       <App />
     </CartProvider>
   </React.StrictMode>

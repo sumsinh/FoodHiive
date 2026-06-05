@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import toast from "react-hot-toast";
 
 function Login() {
   const navigate = useNavigate();
@@ -28,19 +29,25 @@ function Login() {
       localStorage.setItem("refresh", response.data.refresh);
 
       // Store User Data Safely
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user || {})
-      );
+      const profile = await api.get("/users/profile/", {
+  headers: {
+    Authorization: `Bearer ${response.data.access}`,
+  },
+});
 
-      alert("Login Successful");
+localStorage.setItem(
+  "user",
+  JSON.stringify(profile.data)
+);
+
+      toast.success("Login Successful");
 
       navigate("/home");
 
     } catch (error) {
       console.log(error);
 
-      alert("Invalid Credentials");
+      toast.error("Invalid Credentials");
     }
   };
 

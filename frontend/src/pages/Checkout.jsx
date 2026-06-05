@@ -27,76 +27,112 @@ function Checkout() {
 
   const grandTotal = totalPrice + deliveryFee;
 
-  const placeOrder = async () => {
+  const loadRazorpay = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
+ const placeOrder = async () => {
   try {
-
     setLoading(true);
 
-    const orderData = {
+    const loaded = await loadRazorpay();
 
-      full_name: fullName,
+    if (!loaded) {
+      alert("Razorpay SDK Failed To Load");
+      return;
+    }
 
-      phone,
+    const razorpayOrder = await api.post("/payments/", {
+      amount: grandTotal,
+    });
 
-      address,
+    const options = {
+      key: "rzp_test_SvwieaiBAb8Ph4",
+      amount: razorpayOrder.data.amount,
+      currency: "INR",
+      name: "FoodHiive",
+      description: "Food Order Payment",
+      order_id: razorpayOrder.data.id,
 
-      payment_method:
-        paymentMethod === "Cash on Delivery"
-          ? "COD"
-          : paymentMethod,
+      handler: async function (response) {
+  console.log("PAYMENT SUCCESS", response);
+  
+        try {
+          const verifyRes = await api.post(
+            "/payments/verify/",
+            {
+              razorpay_order_id:
+                response.razorpay_order_id,
+              razorpay_payment_id:
+                response.razorpay_payment_id,
+              razorpay_signature:
+                response.razorpay_signature,
+            }
+          );
 
-      total_price: grandTotal,
 
-      items: cartItems.map((item) => ({
-        food_id: item.id,
-        food_name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-      }))
+          if (verifyRes.data.success) {
+            const orderData = {
+              full_name: fullName,
+              phone,
+              address,
+              payment_method: "CARD",
+              total_price: grandTotal,
 
+              items: cartItems.map((item) => ({
+                food_id: item.id,
+                food_name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+              })),
+            };
+            
+
+            const orderResponse = await api.post(
+              "/orders/create/",
+              orderData
+            );
+
+            localStorage.removeItem("cartItems");
+
+            navigate(
+              `/order-success/${orderResponse.data.id}`
+            );
+          } else {
+            alert("Payment Verification Failed");
+          }
+        } catch (error) {
+          console.log(error);
+          alert("Payment Verification Failed");
+        }
+      },
+
+      prefill: {
+        name: fullName,
+        contact: phone,
+      },
+
+      theme: {
+        color: "#f97316",
+      },
     };
 
+    const paymentObject =
+      new window.Razorpay(options);
 
-    const response = await api.post(
-      "/orders/create/",
-      orderData
-    );
-
-
-    console.log(response.data);
-
-
-    localStorage.removeItem("cartItems");
-
-
-    alert("Order Placed Successfully");
-
-
-    navigate(
-      `/order-success/${response.data.id}`
-    );
-
-
+    paymentObject.open();
   } catch (error) {
-
-
-    console.log(error.response?.data);
-
-
-    alert(
-      JSON.stringify(error.response?.data)
-    );
-
-
+    console.log(error);
+    alert("Payment Failed");
   } finally {
-
-
     setLoading(false);
-
-
   }
-
 };
 
   return (
