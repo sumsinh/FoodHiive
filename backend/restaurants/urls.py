@@ -3,10 +3,12 @@ from .views import (
     RestaurantListView,
     RestaurantDetailView,
     RestaurantFoodsView,
+    seed_db,
 )
 
 urlpatterns = [
-    path("", RestaurantListView.as_view(), name="restaurant-list"),
-    path("<int:pk>/", RestaurantDetailView.as_view(), name="restaurant-detail"),
-    path("<int:pk>/foods/", RestaurantFoodsView.as_view(), name="restaurant-foods"),
+    path("", RestaurantListView.as_view()),
+    path("seed/", seed_db),
+    path("<int:pk>/", RestaurantDetailView.as_view()),
+    path("<int:pk>/foods/", RestaurantFoodsView.as_view()),
 ]
