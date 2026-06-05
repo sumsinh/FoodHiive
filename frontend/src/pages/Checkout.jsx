@@ -53,7 +53,7 @@ function Checkout() {
     });
 
     const options = {
-      key: "rzp_test_SvwieaiBAb8Ph4",
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: razorpayOrder.data.amount,
       currency: "INR",
       name: "FoodHiive",
