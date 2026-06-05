@@ -50,3 +50,9 @@ class OrderSerializer(serializers.ModelSerializer):
 )
 
         return order
+    
+class AdminOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Order
+        fields = "__all__"
