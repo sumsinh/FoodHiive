@@ -84,7 +84,7 @@ function Checkout() {
               full_name: fullName,
               phone,
               address,
-              payment_method: "CARD",
+              payment_method: paymentMethod,
               total_price: grandTotal,
 
               items: cartItems.map((item) => ({
