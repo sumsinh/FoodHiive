@@ -81,11 +81,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+from decouple import config
+
 SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", cast=bool)
-
-from decouple import config
-from pathlib import Path
 
 RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID")
 RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET")
@@ -93,16 +92,12 @@ RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET")
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-    }
+    "default": dj_database_url.config(
+        default=config("DATABASE_URL")
+    )
 }
 
 
