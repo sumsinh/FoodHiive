@@ -53,6 +53,7 @@ function Checkout() {
     });
 
     const options = {
+      
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: razorpayOrder.data.amount,
       currency: "INR",
@@ -62,6 +63,7 @@ function Checkout() {
 
       handler: async function (response) {
   console.log("PAYMENT SUCCESS", response);
+  
   
         try {
           const verifyRes = await api.post(
