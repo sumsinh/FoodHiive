@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
 });
 
 // Add access token
@@ -26,7 +26,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-
 // Auto refresh expired token
 api.interceptors.response.use(
   (response) => response,
@@ -44,14 +43,11 @@ api.interceptors.response.use(
         const refresh = localStorage.getItem("refresh");
 
         const res = await axios.post(
-          "http://127.0.0.1:8000/api/users/token/refresh/",
+          `${import.meta.env.VITE_API_URL}/api/users/token/refresh/`,
           { refresh }
         );
 
-        localStorage.setItem(
-          "access",
-          res.data.access
-        );
+        localStorage.setItem("access", res.data.access);
 
         originalRequest.headers.Authorization =
           `Bearer ${res.data.access}`;
