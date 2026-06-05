@@ -110,9 +110,14 @@ function Checkout() {
             alert("Payment Verification Failed");
           }
         } catch (error) {
-          console.log(error);
-          alert("Payment Verification Failed");
-        }
+  console.log("FULL ERROR:", error);
+  console.log("RESPONSE:", error.response?.data);
+
+  alert(
+    error.response?.data?.detail ||
+    "Something failed after payment"
+  );
+}
       },
 
       prefill: {
